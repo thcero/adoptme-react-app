@@ -2,6 +2,7 @@
 import { Component } from "react";
 import { useParams } from "react-router-dom";
 import Carousel from "./Carousel";
+import ErrorBoundary from "./ErrorBoundary";
 
 //component classes have inheent state properties, that are managed via useState through lifecycle functions as componentDidMount, as we cannot use hooks directly within them
 class Details extends Component {
@@ -28,6 +29,8 @@ class Details extends Component {
       return <h2>loading … </h2>;
     }
 
+    // throw new Error("the app fucked up");
+
     const { animal, breed, city, state, description, name, images } =
       this.state;
 
@@ -47,7 +50,11 @@ class Details extends Component {
 
 const WrappedDetails = () => {
   const params = useParams();
-  return <Details params={params} />;
+  return (
+    <ErrorBoundary>
+      <Details params={params} />
+    </ErrorBoundary>
+  );
 };
 
 export default WrappedDetails;
