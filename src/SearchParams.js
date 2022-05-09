@@ -81,7 +81,6 @@ const SearchParams = () => {
             ))}
           </select>
         </label>
-        // below the breed dropdown
         <label htmlFor="theme">
           Theme
           <select

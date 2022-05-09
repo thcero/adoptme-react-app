@@ -1,10 +1,11 @@
 //this could be written as a function component, here it's written as a class component only to show how it was done in the past - but for other reasons can still be useful nowadays
 import { Component } from "react";
 import { useParams } from "react-router-dom";
-import { useContext } from "react/cjs/react.production.min";
+//import { useContext } from "react/cjs/react.production.min";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import ThemeContext from "./ThemeContext";
+import Modal from "./Modal";
 
 //component classes have inheent state properties, that are managed via useState through lifecycle functions as componentDidMount, as we cannot use hooks directly within them
 class Details extends Component {
@@ -13,7 +14,7 @@ class Details extends Component {
   //   this.state = { loading: true };
   // }
   // replace constructor above with new js feature: class properties
-  state = { loading: true };
+  state = { loading: true, showModal: false };
 
   //works like useEffect(() => {}, [])
   async componentDidMount() {
@@ -26,6 +27,8 @@ class Details extends Component {
     this.setState({ loading: false, ...json.pets[0] });
   }
 
+  toggleModal = () => this.setState({ showModal: !this.state.showModal });
+
   render() {
     if (this.state.loading) {
       return <h2>loading … </h2>;
@@ -33,7 +36,7 @@ class Details extends Component {
 
     // throw new Error("the app fucked up");
 
-    const { animal, breed, city, state, description, name, images } =
+    const { animal, breed, city, state, description, name, images, showModal } =
       this.state;
 
     return (
@@ -44,10 +47,26 @@ class Details extends Component {
           <h2>{`${animal} — ${breed} — ${city}, ${state}`}</h2>
           <ThemeContext.Consumer>
             {([theme]) => (
-              <button style={{ backgroundColor: theme }}>Adopt {name}</button>
+              <button
+                onClick={this.toggleModal}
+                style={{ backgroundColor: theme }}
+              >
+                Adopt {name}
+              </button>
             )}
           </ThemeContext.Consumer>
           <p>{description}</p>
+          {showModal ? (
+            <Modal>
+              <div>
+                <h1>Would you like to adopt {name}?</h1>
+                <div className="buttons">
+                  <a href="https://bit.ly/pet-adopt">Yes</a>
+                  <button onClick={this.toggleModal}>No</button>
+                </div>
+              </div>
+            </Modal>
+          ) : null}
         </div>
       </div>
     );
